@@ -2,9 +2,12 @@ import pygame
 import random
 import pygame.freetype
 from main_menu import Main_Menu
+import time
 
 class Card:
-    def __init__(self, color, x, y, width, height, radius, pair):
+    RGB = [(0, 255, 255),(255, 0, 255), (0, 0, 255),(255,0,0), (0,255,0), (255,255,0)]
+    random.shuffle(RGB)
+    def __init__(self, color, x, y, width, height, pair):
         
         self.color = color
         self.x = x
@@ -12,9 +15,7 @@ class Card:
         self.width = width
         self.height = height
         self.pair = pair
-        self.radius = radius
         self.selected = False
-    
     def draw(self, screen, fill = 0):
         pygame.draw.rect(screen, self.color, (self.x,self.y,self.width,self.height), fill)
 
@@ -24,28 +25,23 @@ class Card:
                 return True
             
         return False
-    
-    def circle_draw(self, screen):
-        for i in range(self.pair):
-            if i == 2:
-                pygame.draw.circle(screen, (255,0,0), (self.x+self.width//2,self.y+self.height//2), self.radius, 0)
-            else:
-                pygame.draw.circle(screen, (0,255,0), (self.x+self.width//2,self.y+self.height//2), self.radius)
+    def shape_draw(self, screen, pair):
+        if pair == 1 or pair == 3:
+            pygame.draw.circle(screen, self.RGB[self.pair-1], (self.x+self.width//2,self.y+self.height//2), 30)
+        
+        elif pair == 2 or pair == 4:
+            pygame.draw.rect(screen, self.RGB[self.pair-1], (self.x+self.width//2-35,self.y+self.height//2-35,70,70))
 
-    
-    def sqr_draw(self, screen):
-       for i in range(self.pair):
-            if i == 1:
-                pygame.draw.rect(screen, (255, 0, 255), (self.x+self.width//2-35,self.y+self.height//2-35,70,70))
-            else:
-                pygame.draw.rect(screen, (0, 0, 255), (self.x+self.width//2-35,self.y+self.height//2-35,70,70))
+        else:
+            pygame.draw.polygon(screen, self.RGB[self.pair-1], [(self.x+self.width//2,self.y+self.height//3) , (self.x+self.width*0.75,self.y+(self.height//3+self.height//3)),(self.x+self.width*0.25,self.y+(self.height//3+self.height//3))])
+    # def circle_draw(self, screen):
+    #     pygame.draw.circle(screen, self.RGB[self.pair-1], (self.x+self.width//2,self.y+self.height//2), 30)
 
-    def tri_draw(self, screen):
-       for i in range(self.pair):
-            if i == 4:
-                pygame.draw.polygon(screen, (255, 0, 255), [(self.x+self.width//2,self.y+self.height//3) , (self.x+self.width*0.75,self.y+(self.height//3+self.height//3)),(self.x+self.width*0.25,self.y+(self.height//3+self.height//3))])
-            else:
-                pygame.draw.polygon(screen, (0, 253, 253), [(self.x+self.width//2,self.y+self.height//3) , (self.x+self.width*0.75,self.y+(self.height//3+self.height//3)),(self.x+self.width*0.25,self.y+(self.height//3+self.height//3))])
+    # def sqr_draw(self, screen):
+    #     pygame.draw.rect(screen, self.RGB[self.pair-1], (self.x+self.width//2-35,self.y+self.height//2-35,70,70))
+
+    # def tri_draw(self, screen):
+    #     pygame.draw.polygon(screen, self.RGB[self.pair-1], [(self.x+self.width//2,self.y+self.height//3) , (self.x+self.width*0.75,self.y+(self.height//3+self.height//3)),(self.x+self.width*0.25,self.y+(self.height//3+self.height//3))])
 
 class Button:
     def __init__(self, color, x,y,width,height, text=''):
@@ -80,8 +76,11 @@ class Button:
 
 def level_01():
     pygame.init()
+    
     res = (1290, 712)
     screen = pygame.display.set_mode(res)
+    
+    my_font = pygame.freetype.Font("NotoSans-Regular.ttf", 23)
     
     Button_Set = []
     Button_Set.append(Button((255,255,0),5,670, 140, 30, 'EXIT'))
@@ -90,33 +89,34 @@ def level_01():
     random.shuffle(pos_x)
     pos_y = [50, 255, 460]
     random.shuffle(pos_y)
-    Card_01 = Card((0, 255, 0), pos_x[0], pos_y[0], 125, 200, 30, 1)
-    Card_02 = Card((0, 255, 0), pos_x[1], pos_y[1], 125, 200,30, 1)
-    Card_03 = Card((0, 255, 0), pos_x[2], pos_y[2], 125, 200, 0, 2)
-    Card_04 = Card((0, 255, 0), pos_x[3], pos_y[0], 125, 200, 0, 2)
-    Card_05 = Card((0, 255, 0), pos_x[0], pos_y[1], 125, 200, 30, 3)
-    Card_06 = Card((0, 255, 0), pos_x[1], pos_y[2], 125, 200, 30, 3)
-    Card_07 = Card((0, 255, 0), pos_x[2], pos_y[0], 125, 200, 0, 4)
-    Card_08 = Card((0, 255, 0), pos_x[3], pos_y[1], 125, 200, 0, 4)
-    Card_09 = Card((0, 255, 0), pos_x[0], pos_y[2], 125, 200, 0, 5)
-    Card_10 = Card((0, 255, 0), pos_x[1], pos_y[0], 125, 200, 0, 5)
-    Card_11 = Card((0, 255, 0), pos_x[2], pos_y[1], 125, 200, 0, 6)
-    Card_12 = Card((0, 255, 0), pos_x[3], pos_y[2], 125, 200, 0, 6)
+    Card_Set = []
+    card_x = 0
+    card_y = 0
     
-    Card_Set = [Card_01, Card_02, Card_03, Card_04, Card_05, Card_06, Card_07, Card_08, Card_09, Card_10, Card_11, Card_12]
+    for i in range(12):
+        Card_Set.append(Card((0, 255, 0), pos_x[card_x], pos_y[card_y], 125, 200,i//2+1))
+        card_x += 1
+        if (card_x > 3):
+            card_x = 0
+            card_y += 1
+
+
     
     pos = pygame.mouse.get_pos()
     mb = pygame.mouse.get_pressed()
+    
     for card in Card_Set:
         card.draw(screen)
+    
     num_cards_selected = 0
     card_shape = 0
     score = 0
     p_attempt = 0
     pair_set = 6
+    
     while (True):
         screen.fill((0,0,20))
-        my_font = pygame.freetype.Font("NotoSans-Regular.ttf", 23)
+        
         my_font.render_to(screen, (20, 20), ('Score:' + str(score)), (255,255,0))
         pos = pygame.mouse.get_pos()
         mb = pygame.mouse.get_pressed()
@@ -129,13 +129,16 @@ def level_01():
 
         for card in Card_Set:
             if card.selected == False:
+                
                 if card.isOver(pos):
                     card.color = (255, 255 ,255)
                     card.draw(screen)
                     if (mb[0]):
+                        
                         if num_cards_selected == 3:
                             num_cards_selected = 0
                             pass
+                        
                         card.selected = True
                         num_cards_selected += 1
                         
@@ -149,140 +152,47 @@ def level_01():
                                 score -= 80
                             if score < 0:
                                 score = 0
-                            if card_shape == 1 and card.pair == 1:
+                            if card_shape == card.pair:
                                 if card.selected == True:
-                                    Card_Set.remove(Card_01)
-                                    Card_Set.remove(Card_02)
-                                    score += 100
-                                    num_cards_selected = 0
-                                    p_attempt = 0
-                                    pair_set -= 1
-                                    print(pair_set)
-
-                            if card_shape == 2 and card.pair == 2:
-                                if card.selected == True:
-                                    Card_Set.remove(Card_03)
-                                    Card_Set.remove(Card_04)
+                                    c1 = None
+                                    c2 = None  
+                                    for c in Card_Set:
+                                        if card.pair == c.pair:
+                                            if c1 != None:
+                                                c2 = c
+                                            else:
+                                                c1 = c
+                                    pygame.time.delay(1000)
+                                    Card_Set.remove(c1)
+                                    Card_Set.remove(c2)
+                                    
+                        # Adds value to score, resets attempt values and removes one pair from the level       
                                     score += 100
                                     num_cards_selected = 0
                                     p_attempt = 0
                                     pair_set -= 1
                                     
-                            if card_shape == 3 and card.pair == 3:
-                                if card.selected == True:
-                                    Card_Set.remove(Card_05)
-                                    Card_Set.remove(Card_06)
-                                    score += 100
-                                    num_cards_selected = 0
-                                    p_attempt = 0
-                                    pair_set -= 1
-                                    print(pair_set)
-                            
-                            if card_shape == 4 and card.pair == 4:
-                                if card.selected == True:
-                                    Card_Set.remove(Card_07)
-                                    Card_Set.remove(Card_08)
-                                    score += 100
-                                    num_cards_selected = 0
-                                    p_attempt = 0
-                                    pair_set -= 1
-                                    print(pair_set)
-
-                            if card_shape == 5 and card.pair == 5:
-                                if card.selected == True:
-                                    Card_Set.remove(Card_09)
-                                    Card_Set.remove(Card_10)
-                                    score += 100
-                                    num_cards_selected = 0
-                                    p_attempt = 0
-                                    pair_set -= 1
-                                    print(pair_set)
-                            
-                            if card_shape == 6 and card.pair == 6:
-                                if card.selected == True:
-                                    Card_Set.remove(Card_11)
-                                    Card_Set.remove(Card_12)
-                                    score += 100
-                                    num_cards_selected = 0
-                                    pair_set -= 1
-                                    print(pair_set)
-                 
                 else:
                     card.color = (0, 255, 0) 
                     card.draw(screen)
-            
+                
             else:
                 if num_cards_selected == 3:
-                        card.selected = False
-                        continue
+                    card.selected = False
+                    continue
                 
-                if card.pair == 1 or card.pair == 3:
-                    card.circle_draw(screen)
-                    if card.pair == 1:
-                        card_shape = 1
-                        card.color = (0,255,0)
-                        card.draw(screen, 2)   
-                        if card.isOver(pos):
-                            card.color = (255, 255 ,255)
-                            card.draw(screen, 2)
-                        else:
-                            card.color = (0,255,0)
-                            card.draw(screen, 2)
+                
+                card_shape = card.pair
+                
+                card.shape_draw(screen, card.pair)   
                     
-                    elif card.pair == 3:
-                        card_shape = 3
-                        if card.isOver(pos):
-                            card.color = (255, 255 ,255)
-                            card.draw(screen, 2)
-                        else:
-                            card.color = (255, 0, 0) 
-                            card.draw(screen,2)
-            
-                elif card.pair == 2 or card.pair == 4:
-                    card.sqr_draw(screen)
-                    
-                    if card.pair == 2:
-                        card_shape = 2
-                        card.color = (255, 0, 255)
-                        card.draw(screen, 2)
-                        if card.isOver(pos):
-                            card.color = (255, 255 ,255)
-                            card.draw(screen, 2)
-                        else:
-                            card.color = (255, 0, 255)
-                            card.draw(screen,2)
-                    
-                    elif card.pair == 4:
-                        card_shape = 4
-                        if card.isOver(pos):
-                            card.color = (255, 255 ,255)
-                            card.draw(screen, 2)
-                        else:
-                            card.color = (0, 0, 255)
-                            card.draw(screen,2)
-                    
+                if card.isOver(pos):
+                    card.color = (255, 255 ,255)
+                    card.draw(screen, 2)
                 else:
-                    card.tri_draw(screen)
-                    
-                    if card.pair == 5:
-                        card_shape = 5
-                        card.color = (255, 0, 255)
-                        card.draw(screen, 2)
-                        if card.isOver(pos):
-                            card.color = (255, 255 ,255)
-                            card.draw(screen, 2)
-                        else:
-                            card.color = (255, 0, 255)
-                            card.draw(screen,2)
-                    elif card.pair == 6:
-                        card_shape = 6
-                        if card.isOver(pos):
-                            card.color = (255, 255 ,255)
-                            card.draw(screen, 2)
-                        else:
-                            card.color = (0, 253, 253)
-                            card.draw(screen,2)
-                        
+                    card.color = card.RGB[card.pair-1]
+                    card.draw(screen, 2)
+            
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
                 exit()
