@@ -144,14 +144,7 @@ def level_01():
                         
                         if num_cards_selected == 2:
                             p_attempt += 1
-                            if p_attempt == 2:
-                                score-= 20
-                            if p_attempt == 3:
-                                score-= 40
-                            if p_attempt == 4:
-                                score -= 80
-                            if score < 0:
-                                score = 0
+
                             if card_shape == card.pair:
                                 if card.selected == True:
                                     c1 = None
@@ -162,7 +155,6 @@ def level_01():
                                                 c2 = c
                                             else:
                                                 c1 = c
-                                    pygame.time.delay(1000)
                                     Card_Set.remove(c1)
                                     Card_Set.remove(c2)
                                     
@@ -171,7 +163,14 @@ def level_01():
                                     num_cards_selected = 0
                                     p_attempt = 0
                                     pair_set -= 1
-                                    
+                            for i in range (1, p_attempt+1):
+                                if i == 1:
+                                    continue
+                                else:
+                                    score -= 20*(p_attempt-1)
+                                    if score < 0:
+                                        score = 0
+                                    break        
                 else:
                     card.color = (0, 255, 0) 
                     card.draw(screen)
