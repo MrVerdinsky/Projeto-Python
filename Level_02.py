@@ -3,10 +3,11 @@ import random
 import pygame.freetype
 from main_menu import Main_Menu
 import time
-
 class Card:
     RGB = [(0, 255, 255),(255, 0, 255), (0, 0, 255),(255,0,0), (0,255,0), (255,255,0)]
-    random.shuffle(RGB)
+    Color_Set = [(random.choice(RGB)),(random.choice(RGB))]
+    RGB.extend(Color_Set)
+    print(RGB)
     def __init__(self, color, x, y, width, height, pair):
         
         self.color = color
@@ -26,15 +27,18 @@ class Card:
             
         return False
     def shape_draw(self, screen, pair):
-        if pair == 1 or pair == 3:
-            pygame.draw.circle(screen, self.RGB[self.pair-1], (self.x+self.width//2,self.y+self.height//2), 30)
-        
-        elif pair == 2 or pair == 4:
-            pygame.draw.rect(screen, self.RGB[self.pair-1], (self.x+self.width//4,self.y+self.height//3,self.width//2,self.height//3))
+            if (pair <= 2):  
 
-        else:
-            pygame.draw.polygon(screen, self.RGB[self.pair-1], [(self.x+self.width//2,self.y+self.height//3) , (self.x+self.width*0.75,self.y+(self.height//3+self.height//3)),(self.x+self.width*0.25,self.y+(self.height//3+self.height//3))])
+                    pygame.draw.circle(screen, self.RGB[self.pair-1], (self.x+self.width//2,self.y+self.height//2), 30)
+                
+            
+            elif (pair > 2 and pair <= 4):
+                    pygame.draw.rect(screen, self.RGB[self.pair-1], (self.x+self.width//4,self.y+self.height//3,self.width//2,self.height//3))
+            
+            else:
 
+                    pygame.draw.polygon(screen, self.RGB[self.pair-1], [(self.x+self.width//2,self.y+self.height//3) , (self.x+self.width*0.75,self.y+(self.height//3+self.height//3)),(self.x+self.width*0.25,self.y+(self.height//3+self.height//3))])
+                
 
 class Button:
     def __init__(self, color, x,y,width,height, text=''):
@@ -67,7 +71,7 @@ class Button:
             
         return False
 
-def level_01():
+def level_02():
     pygame.init()
     
     res = (1290, 712)
@@ -78,21 +82,20 @@ def level_01():
     Button_Set = []
     Button_Set.append(Button((255,255,0),5,670, 140, 30, 'EXIT'))
     
-    pos_x = [360,490,620,750]
+    pos_x = [435,530,625,720]
     random.shuffle(pos_x)
-    pos_y = [50, 255, 460]
+    pos_y = [50, 190, 330, 470]
     random.shuffle(pos_y)
     Card_Set = []
     card_x = 0
     card_y = 0
-    
-    for i in range(12):
-        Card_Set.append(Card((0, 255, 0), pos_x[card_x], pos_y[card_y], 125, 200,i//2+1))
+    print(pos_x,pos_y)
+    for i in range(16):
+        Card_Set.append(Card((0, 255, 0), pos_x[card_x], pos_y[card_y], 85, 130,i//2+1))
         card_x += 1
         if (card_x > 3):
             card_x = 0
             card_y += 1
-
 
     
     pos = pygame.mouse.get_pos()
@@ -105,8 +108,7 @@ def level_01():
     card_shape = 0
     score = 0
     p_attempt = 0
-    pair_set = 6
-    
+    pair_set = 8
     while (True):
         screen.fill((0,0,20))
         
@@ -190,8 +192,7 @@ def level_01():
                 exit()
 
         if pair_set == 0:
-            my_font.render_to(screen, (1290//2-button.width, 720//2-button.height//2), 'CONGRATULATIONS!', random.choice(card.RGB))))
-            
+            my_font.render_to(screen, (1290//2-button.width, 720//2-button.height//2), 'CONGRATULATIONS!', random.choice(card.RGB))
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             for button in Button_Set:
@@ -200,3 +201,4 @@ def level_01():
                         return Main_Menu(True)
 
         pygame.display.flip()
+level_02()
