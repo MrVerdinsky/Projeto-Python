@@ -12,7 +12,7 @@ class Button:
             self.text = text
         
     # function that draws the buttons the screen
-    def draw(self,screen, outline=None):
+    def draw(self,screen, outline=1):
         
         my_font = pygame.freetype.Font("NotoSans-Regular.ttf", 23)   
         
@@ -34,9 +34,12 @@ class Button:
         return False
 
 def Main_Menu(bool):
-        pygame.init() # Initializes pygame, with the default parameters
+         # Initializes pygame, with the default parameters
+        pygame.init()
+        
         # Define window size/resolution
         res = (1280,712) 
+       
 
         #Creates the game window and display surface
         screen = pygame.display.set_mode(res)
@@ -52,9 +55,11 @@ def Main_Menu(bool):
         Button_Set.append(Button((255,255,0),572,382, 140, 30, '6x5'))
         Button_Set.append(Button((255,255,0),572,422, 140, 30, '6x6'))
         Button_Set.append(Button((255,255,0),572,482, 140, 30, 'EXIT'))
-
+        pygame.mixer.music.load('main_menu.ogg')
+        pygame.mixer.music.play(-1)
         # Game loop, to keep the game running until window closed of "Exit" button pressed
         while (True):
+            
         # Prints the buttons on screen
             for button in Button_Set:
                 button.draw(screen)
@@ -77,6 +82,7 @@ def Main_Menu(bool):
                                     quit()
                                 
                                 elif button.text == '4x3':
+                                    pygame.mixer.music.stop()
                                     Level = 1
                                     return Level
                                 

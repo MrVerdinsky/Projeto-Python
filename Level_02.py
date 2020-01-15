@@ -201,4 +201,3 @@ def level_02():
                         return Main_Menu(True)
 
         pygame.display.flip()
-level_02()
