@@ -83,10 +83,33 @@ def Main_Menu(bool):
                                 
                                 elif button.text == '4x3':
                                     pygame.mixer.music.stop()
+                                    pygame.mixer.music.load('level_01.ogg')
+                                    pygame.mixer.music.play(-1)
                                     Level = 1
                                     return Level
                                 
                                 elif button.text == '4x4':
+                                    pygame.mixer.music.stop()
+                                    pygame.mixer.music.load('level_02.ogg')
+                                    pygame.mixer.music.play(-1)
+                                    Level = 2
+                                    return Level
+                                elif button.text == '5x4':
+                                    pygame.mixer.music.stop()
+                                    pygame.mixer.music.load('level_03.ogg')
+                                    pygame.mixer.music.play(-1)
+                                    Level = 2
+                                    return Level
+                                elif button.text == '6x5':
+                                    pygame.mixer.music.stop()
+                                    pygame.mixer.music.load('level_04.ogg')
+                                    pygame.mixer.music.play(-1)
+                                    Level = 2
+                                    return Level
+                                elif button.text == '6x6':
+                                    pygame.mixer.music.stop()
+                                    pygame.mixer.music.load('level_05.ogg')
+                                    pygame.mixer.music.play(-1)
                                     Level = 2
                                     return Level
                 

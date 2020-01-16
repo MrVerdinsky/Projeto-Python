@@ -3,6 +3,7 @@ import random
 import pygame.freetype
 from main_menu import Main_Menu
 import time
+
 #Class for the cards with their specific parameters and functions to be called while running the program
 class Card:
     def __init__(self, color, position, width, height, match):
@@ -75,7 +76,7 @@ def check_pair (c1, c2):
         return False
     
 
-def level_01():
+def levels(Cx,Cy):
     pygame.init()
     
     #Defines window resolution
@@ -84,17 +85,33 @@ def level_01():
     #Draws the window with previous parameters
     screen = pygame.display.set_mode(res)
     
-    #Loads font to be used while runnning the program
+    #Loads font to be used while running the program
     my_font = pygame.freetype.Font("NotoSans-Regular.ttf", 23)
     
     # Adds the 'Exit' Button to the level screen
     Button_Set = []
     Button_Set.append(Button((255,255,0),5,670, 140, 30, 'EXIT'))
     
+    
     # Creates array of X_positon and Y_Position, creates all possible card locations
     Card_position = []
-    pos_x = [360,490,620,750]
-    pos_y = [50, 255, 460]
+    padding = 10
+    Total_H = 550
+    Board = (Cx, Cy)
+    Card_H = (Total_H - (Board[1]-1)*padding)//Board[1]
+    y = 50 - Card_H
+    pos_y = []
+    for i in range(Board[1]): 
+        y = y + Card_H + padding
+        pos_y.append(y)
+
+    pos_x = []
+    Card_W = int(Card_H - Card_H//Board[1])
+    x = 360 - Card_W
+    for i in range(Board[0]):
+        x = x + Card_W + padding
+        pos_x.append(x)
+    print(pos_y)
     for i in pos_x:
         for j in pos_y:
             Card_position.append((i,j))
@@ -121,14 +138,14 @@ def level_01():
 
     #Creates array of all pairs for the specific level and shuffles it
     Card_Sequence = []
-    for i in range(12 // 2):
+    for i in range((Board[0]*Board[1]) // 2):
         Card_Sequence.append(Possible_Cards[i])
         Card_Sequence.append(Possible_Cards[i])
     random.shuffle(Card_Sequence)
 
     # Adds all cards to the Deck to be used with all the parameters created before
     for i in range(len(Card_Sequence)):
-         Game_Deck.append(Card((0,255,0), Card_position[i], 125, 200, Card_Sequence[i]))
+         Game_Deck.append(Card((0,255,0), Card_position[i], Card_W, Card_H, Card_Sequence[i]))
     
     # Gets position of the mouse during game
     pos = pygame.mouse.get_pos()
@@ -153,9 +170,8 @@ def level_01():
     pair_set = 6 # Total of pairs in the specific level
 
     #Load music for this level and plays it at the start of the game
-    pygame.mixer.music.load('level_01.ogg')
-    pygame.mixer.music.play(-1)
-
+    end_song = False
+    
     while (True):
         screen.fill((0,0,20))
         # Prints the Score with the Value on screen
@@ -263,7 +279,11 @@ def level_01():
 
         # Displays the 'Congratulation' message after the player clears the board
         if pair_set == 0:
+            if end_song == False:
+                pygame.mixer.music.stop()
+                end_song = True   
             my_font.render_to(screen, (1290//2-button.width, 720//2-button.height//2), 'CONGRATULATIONS!', random.choice(RGB))
+        
 
         # Detects if the player clicked the 'Exit' Button, stopping the music
         # and sending the player to the main menu

@@ -1,7 +1,7 @@
 # imports pygame into our program
 import pygame
 import pygame.freetype
-from Level_01 import level_01
+from Level_01 import levels
 from main_menu import Main_Menu
 from Level_02 import level_02
 
@@ -17,9 +17,10 @@ def main():
     while (True):
         
         if (Level == 1):
-            Level = level_01()
+
+            Level = levels(4, 3)
 
         elif (Level == 2):  
-            Level= level_02()    
+            Level = levels(4, 4)
 
 main()

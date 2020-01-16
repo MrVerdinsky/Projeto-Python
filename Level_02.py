@@ -7,7 +7,7 @@ class Card:
     RGB = [(0, 255, 255),(255, 0, 255), (0, 0, 255),(255,0,0), (0,255,0), (255,255,0)]
     Color_Set = [(random.choice(RGB)),(random.choice(RGB))]
     RGB.extend(Color_Set)
-    print(RGB)
+    
     def __init__(self, color, x, y, width, height, pair):
         
         self.color = color
