@@ -98,19 +98,19 @@ def Main_Menu(bool):
                                     pygame.mixer.music.stop()
                                     pygame.mixer.music.load('level_03.ogg')
                                     pygame.mixer.music.play(-1)
-                                    Level = 2
+                                    Level = 3
                                     return Level
                                 elif button.text == '6x5':
                                     pygame.mixer.music.stop()
                                     pygame.mixer.music.load('level_04.ogg')
                                     pygame.mixer.music.play(-1)
-                                    Level = 2
+                                    Level = 4
                                     return Level
                                 elif button.text == '6x6':
                                     pygame.mixer.music.stop()
                                     pygame.mixer.music.load('level_05.ogg')
                                     pygame.mixer.music.play(-1)
-                                    Level = 2
+                                    Level = 5
                                     return Level
                 
                 # Detects the hovering of the mouse over the buttons

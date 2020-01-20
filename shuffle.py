@@ -3,7 +3,7 @@ import pygame
 import pygame.freetype
 from Level_01 import levels
 from main_menu import Main_Menu
-from Level_02 import level_02
+
 
 # Class that makes the buttons and takes input from the mouse
 
@@ -17,10 +17,19 @@ def main():
     while (True):
         
         if (Level == 1):
-
-            Level = levels(4, 3)
+            Level = levels(4, 3, 480)
 
         elif (Level == 2):  
-            Level = levels(4, 4)
+            Level = levels(4, 4, 454)
+
+        elif (Level == 3):  
+            Level = levels(5, 4, 434)
+
+        elif (Level == 4):  
+            Level = levels(6, 5, 370)
+        
+        elif (Level == 5):  
+            Level = levels(6, 6, 300)
+
 
 main()

@@ -29,7 +29,7 @@ class Card:
     def shape_draw(self, screen):
         if (self.selected):
             if self.match[0] == 0: # Draws Circle if Shape value = 0
-                pygame.draw.circle(screen, self.match[1], (self.position[0]+self.width//2,self.position[1]+self.height//2), 30)            
+                pygame.draw.circle(screen, self.match[1], (self.position[0]+self.width//2,self.position[1]+self.height//2), self.width//4)            
             elif self.match[0] == 1: # Draws Square if Shape value = 1
                 pygame.draw.rect(screen, self.match[1], (self.position[0]+self.width//4,self.position[1]+self.height//3,self.width//2,self.height//3))              
             else: # Draws Triangle if Shape value = 2                 
@@ -76,8 +76,9 @@ def check_pair (c1, c2):
         return False
     
 
-def levels(Cx,Cy):
+def levels(Cx,Cy, time):
     pygame.init()
+    
     
     #Defines window resolution
     res = (1290, 712)
@@ -111,7 +112,7 @@ def levels(Cx,Cy):
     for i in range(Board[0]):
         x = x + Card_W + padding
         pos_x.append(x)
-    print(pos_y)
+        
     for i in pos_x:
         for j in pos_y:
             Card_position.append((i,j))
@@ -167,32 +168,40 @@ def levels(Cx,Cy):
     num_cards_selected = 0 #Used to see how many cards the player has clicked
     score = 0 # Score at the beginning of the game
     p_attempt = 0 # Used to take points from the players score based on player moves
-    pair_set = 6 # Total of pairs in the specific level
+    pair_set = (len(Game_Deck)//2) # Total of pairs in the specific level
 
     #Load music for this level and plays it at the start of the game
+   
     end_song = False
-    
+    load_song = True
+        
+        # pygame.mixer.music.play(-1)
+
+    MOVE_SIDE = time
+    move_side_event = pygame.USEREVENT + 1
+    pygame.time.set_timer(move_side_event, MOVE_SIDE)
+    clock = pygame.time.Clock()
+
     while (True):
         screen.fill((0,0,20))
-        # Prints the Score with the Value on screen
-        my_font.render_to(screen, (20, 20), ('Score:' + str(score)), (255,255,0))
-        
+        clock.tick(120)
+        if load_song == False:
+           pygame.mixer.music.load('end.ogg')
+           pygame.mixer.music.play(-1)
+           end_song = True
+           load_song = True
+
         # Gets position of the mouse during game
         pos = pygame.mouse.get_pos()
 
         # Detectes if mouse is pressed during game
         mb = pygame.mouse.get_pressed()
 
-        # Draws the 'Exit' Button and changes it's color if the player hovers it
-        for button in Button_Set:
-            button.draw(screen)
-            if button.isOver(pos):
-                button.color = (255, 255 ,255)
-            else:
-                button.color = (255,255,0)
+        
 
         # Cycle used to select cards and compare them
         for card in Game_Deck:
+           
             if card.selected == False:
                 # Change card color if the players hovers it
                 if card.isOver(pos):
@@ -276,13 +285,17 @@ def levels(Cx,Cy):
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
                 exit()
-
+            
+            elif event.type == move_side_event:
+                for card in Game_Deck:
+                    card.position = (card.position[0], card.position[1] + card.height + padding)  
+            
+                    if card.position[1]  > 712:
+                        card.position = (card.position[0], -card.height)
+                        card.position = (card.position[0], card.position[1] + card.height + padding)
         # Displays the 'Congratulation' message after the player clears the board
-        if pair_set == 0:
-            if end_song == False:
-                pygame.mixer.music.stop()
-                end_song = True   
-            my_font.render_to(screen, (1290//2-button.width, 720//2-button.height//2), 'CONGRATULATIONS!', random.choice(RGB))
+         
+                
         
 
         # Detects if the player clicked the 'Exit' Button, stopping the music
@@ -293,6 +306,25 @@ def levels(Cx,Cy):
                     if button.text == 'EXIT':
                         pygame.mixer.music.stop()
                         return Main_Menu(True)
+        
+        
+        # Draws the 'Exit' Button and changes it's color if the player hovers it
+        for button in Button_Set:
+            button.draw(screen)
+            if button.isOver(pos):
+                button.color = (255, 255 ,255)
+            else:
+                button.color = (255,255,0)
+        
+        if pair_set == 0:
+            my_font.render_to(screen, (1290//2-button.width, 720//2-button.height//2), 'CONGRATULATIONS!', random.choice(RGB))
+            if end_song == False:
+                pygame.mixer.music.stop()
+                load_song = False
+           
+        
+        # Prints the Score with the Value on screen
+        my_font.render_to(screen, (20, 20), ('Score:' + str(score)), (255,255,0))
 
         # Flips everything that was buffered and draws it in the screen
         pygame.display.flip()
